@@ -15,7 +15,8 @@
 
 ;;; AMOP.
 (defparameter *mop-map-file*
-  (merge-pathnames "Mop_Sym.txt" #.*compile-file-pathname*))
+  (merge-pathnames "Mop_Sym.txt"
+                   (or #.*compile-file-truename* *default-pathname-defaults*)))
 
 (defparameter *mop-root* "http://www.alu.org/mop/")
 
