@@ -51,6 +51,7 @@
       (unless s
         (when (> (- (get-universal-time) *last-warn-time*) 10)
           (format *trace-output* "Warning: could not find hyperspec map file. Adjust the path at the top of clhs-lookup.lisp to get links to the HyperSpec.~%")
+          (error "Warning: could not find hyperspec map file. Adjust the path at the top of clhs-lookup.lisp to get links to the HyperSpec.~%")
           (setf *last-warn-time* (get-universal-time)))
         (return-from populate-table nil))
       (flet ((set-symbol (sym url)

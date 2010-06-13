@@ -230,7 +230,7 @@
        (if (> current-position (length string))
            (return-from scan-string
              (progn
-               (format *trace-output* "Scan was called ~S times.~%"
+               #++(format *trace-output* "Scan was called ~S times.~%"
                        *scan-calls*)
                (finish-current (length string) nil (constantly nil))
                result))
