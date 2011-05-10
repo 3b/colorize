@@ -352,6 +352,10 @@
   ((:normal
     ((scan #\#)
      (set-mode :preprocessor
+               :until (scan-any '(#\return #\newline)))))
+   (:normal
+    ((scan "//")
+     (set-mode :comment
                :until (scan-any '(#\return #\newline))))))
   :formatters
   ((:preprocessor
@@ -377,10 +381,7 @@
 (define-coloring-type :c++ "C++"
   :parent :c
   :transitions
-  ((:normal
-    ((scan "//")
-     (set-mode :comment
-               :until (scan-any '(#\return #\newline))))))
+  ()
   :formatters
   ((:word-ish
     (lambda (type s)
@@ -659,10 +660,6 @@
   :default-mode :normal
   :transitions
   ((:normal
-    ((scan-any *c-begin-word*)
-     (set-mode :word-ish
-               :until (scan-any *c-terminators*)
-               :advancing nil))
     ((or
       (scan-any *c-open-parens*)
       (scan-any *c-close-parens*))
@@ -695,7 +692,12 @@
     ((scan "class")
      (set-mode :def
 	       :until (scan-any '(#\: #\())
-	       :advancing nil)))
+	       :advancing nil))
+    ;; Python bug-fix from sjamaan of #scheme, 2010/06/26.
+    ((scan-any *c-begin-word*)
+     (set-mode :word-ish
+               :until (scan-any *c-terminators*)
+               :advancing nil)))
    (:string
     ((scan #\\)
      (set-mode :single-escape
@@ -849,7 +851,8 @@ class=\"keyword\">~A</span>"
       (declare (ignore type))
       (cond (beginning-of-line
 	     (setq beginning-of-line nil)
-	     (if (char= (elt s 0) #\space)
+	     (if (and (> (length s) 0)
+		      (char= (elt s 0) #\space))
 		 (concatenate 'string "&nbsp;" (subseq s 1))
                  s))
 	    (t s))))
